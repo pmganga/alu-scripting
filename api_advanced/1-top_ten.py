@@ -9,25 +9,21 @@ import requests
 def top_ten(subreddit):
     """
     Prints the titles of the 10 hottest posts on a given subreddit.
-    Prints None if the subreddit is invalid.
     """
-    # Hardcode the limit into the URL for strict checker compatibility
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
-    headers = {"User-Agent": "python:alu.api.advanced:v1.0"}
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    headers = {"User-Agent": "linux:alu.api.advanced:v1.0"}
+    params = {"limit": 10}
 
     try:
-        response = requests.get(url, headers=headers, allow_redirects=False)
-
-        if response.status_code != 200:
-            print(None)
-            return
-
-        posts = response.json().get("data", {}).get("children", [])
-        if not posts:
-            print(None)
-            return
-
-        for post in posts[0:10]:
-            print(post.get("data", {}).get("title"))
+        response = requests.get(
+            url, headers=headers, params=params, allow_redirects=False
+        )
+        if response.status_code == 200:
+            data = response.json().get("data", {})
+            posts = data.get("children", [])
+            for post in posts[:10]:
+                print(post.get("data", {}).get("title"))
+        else:
+            print("None")
     except Exception:
-        print(None)
+        print("None")
