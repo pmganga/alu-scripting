@@ -13,10 +13,12 @@ def count_words(subreddit, word_list, after=None, word_counts=None):
                 word_counts[word] = 0
 
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    headers = {"User-Agent": "linux:0x01.api.advanced:v1.0.0 (by /u/crispusnjumwa)"}
+    headers = {"User-Agent": "linux:api.advanced:v1.0.0"}
     params = {"limit": 100, "after": after}
 
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    response = requests.get(
+        url, headers=headers, params=params, allow_redirects=False
+    )
 
     if response.status_code == 200:
         data = response.json().get("data", {})
@@ -31,7 +33,9 @@ def count_words(subreddit, word_list, after=None, word_counts=None):
         if after is not None:
             return count_words(subreddit, word_list, after, word_counts)
         else:
-            sorted_counts = sorted(word_counts.items(), key=lambda x: (-x[1], x[0]))
+            sorted_counts = sorted(
+                word_counts.items(), key=lambda x: (-x[1], x[0])
+            )
             for word, count in sorted_counts:
                 if count > 0:
                     print("{}: {}".format(word, count))
